@@ -98,7 +98,25 @@ namespace UnitTestProject
             Assert.IsNotNull(csvProcessedDatas);
             Assert.AreEqual(6, csvProcessedDatas.Count);
         }
+
+        [TestMethod]
+        [DataRow("05/10/2022 10:58")]
+        [DataRow("15/06/2022 01:20")]
+        [DataRow("10/02/2022 05:18")]
+
+        public void GetSDRofDateTimeTest(string dateTime)
+        {
+            DateTime userInput = DateTime.Parse(dateTime);
+
+            // Encode the user input and return the SDR
+            var sdr1 = DateTimeEncoders.GetSDRofDateTime(userInput);
+            var sdr2 = DateTimeEncoders.GetSDRofDateTime(userInput);
+
+            Assert.AreEqual(sdr1.Length, sdr2.Length);
+        }
+
         #endregion
+
         #region Test Methods for Encoder Methods
         /// <summary>
         /// Generates encoded images for week days.
@@ -173,9 +191,9 @@ namespace UnitTestProject
             ScalarEncoder segmentEncoder = DateTimeEncoders.FetchSegmentEncoder();
             DateTime dateTime = DateTime.Parse(input);
             var time = dateTime.ToString("HH:mm");
-            Slot result = CSVPRocessingMethods.GetSlot(time);
+            Slot slot = CSVPRocessingMethods.GetSlot(time);
 
-            var result = segmentEncoder.Encode(result.Segment);
+            var result = segmentEncoder.Encode(slot.Segment);
             int[,] twoDimenArray = ArrayUtils.Make2DArray<int>(result, 100, 100);
             var twoDimArray = ArrayUtils.Transpose(twoDimenArray);
             NeoCortexUtils.DrawBitmap(twoDimArray, 1024, 1024, $"{dateTime.Day}.png", null);
